@@ -1,0 +1,21 @@
+// The creation of the square is done in the same way as the triangle.
+                 // 1. Instantiate the geometry object
+                 // 2. Add the vertices
+                 // 3. Define the faces by setting the vertices indices
+                 var cuadrado = new THREE.Geometry();
+                 cuadrado.vertices.push(new THREE.Vector3(-0.25,  0.25, 0.0));
+                 cuadrado.vertices.push(new THREE.Vector3(0.25,  0.25, 0.0));
+                 cuadrado.vertices.push(new THREE.Vector3(0.25, -0.25, 0.0));
+                 cuadrado.vertices.push(new THREE.Vector3(-0.25, -0.25, 0.0));
+
+				 cuadrado.faces.push(new THREE.Face3(0, 1, 2));
+				 cuadrado.faces.push(new THREE.Face3(0, 2, 3));
+				 
+				 var color_window = new THREE.MeshBasicMaterial({
+                     color:0x6EF3E3,
+                     side:THREE.DoubleSide
+                 });
+				 var window1 = new THREE.Mesh(window, color_window);
+                 window1.position.set(-1.2, 0.55, 4.0);
+                 scene.add(window1);
+				 

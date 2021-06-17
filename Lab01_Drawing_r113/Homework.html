@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+ <html>
+     <head>
+         <title>Homework</title>
+         <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+         <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1">
+         <style type="text/css">
+             body {
+                 /* Set the background color of the HTML page to black */
+                 background-color: #FFFFFF;
+ 
+                 /* Hide oversized content. This prevents the scroll bars. */
+                 overflow: hidden;
+             }
+         </style>
+         <script src="three.js"></script>
+     </head>
+     <body>
+         <div id="WebGLCanvas"> </div>
+
+        <script>
+             var scene;
+             var camera;
+			 var TriangleMesh;
+			 var squareMesh;
+			 var window1;
+			 var window2;
+			 var door;
+			 var pipe;
+			 
+             initializeScene();
+             renderScene();
+			 animateScene(); 
+             function initializeScene(){
+                 
+                 renderer = new THREE.WebGLRenderer({antialias:true});
+                  
+                 // Set the background color will be white 
+                 renderer.setClearColor(0xFFFFFF, 1);
+                 canvasWidth = window.innerWidth;
+                 canvasHeight = window.innerHeight;
+
+                 renderer.setSize(canvasWidth, canvasHeight);
+
+                 document.getElementById("WebGLCanvas").appendChild(renderer.domElement);
+
+                 //the scene where all goes 
+                 scene = new THREE.Scene();
+				 
+                 // The camera to watch the scene
+                 camera = new THREE.PerspectiveCamera(45, canvasWidth / canvasHeight, 1, 100);
+                 camera.position.set(0, 0, 10);
+                 camera.lookAt(scene.position);
+                 scene.add(camera);
+				 
+                 // Create the roof wich i will put high to put under the central part of the house
+                 var triangleGeometry = new THREE.Geometry();
+                 triangleGeometry.vertices.push(new THREE.Vector3( 0.0,  2.0, 0.0));
+                 triangleGeometry.vertices.push(new THREE.Vector3(-1.0, 1.0, 0.0));
+                 triangleGeometry.vertices.push(new THREE.Vector3( 1.0, 1.0, 0.0));
+                 triangleGeometry.faces.push(new THREE.Face3(0, 1, 2));
+ 
+                 // the roof will be red 
+                 var triangleMaterial = new THREE.MeshBasicMaterial({
+                     color:0xFF0000,
+                     side:THREE.DoubleSide
+                 });
+					//I add the roof to the scene.
+                 triangleMesh = new THREE.Mesh(triangleGeometry, triangleMaterial);
+                 triangleMesh.position.set(-1.5, 0.0, 4.0);
+                 scene.add(triangleMesh);
+ 
+                 // Im gonna make the central part of the house
+                 var squareGeometry = new THREE.Geometry();
+                 squareGeometry.vertices.push(new THREE.Vector3(-1.0,  1.0, 0.0));
+                 squareGeometry.vertices.push(new THREE.Vector3( 1.0,  1.0, 0.0));
+                 squareGeometry.vertices.push(new THREE.Vector3( 1.0, -1.0, 0.0));
+                 squareGeometry.vertices.push(new THREE.Vector3(-1.0, -1.0, 0.0));
+				 squareGeometry.faces.push(new THREE.Face3(0, 1, 2));
+				 squareGeometry.faces.push(new THREE.Face3(0, 2, 3));
+					//the color of the house will be yellow very typical i know hahaha
+                 var squareMaterial = new THREE.MeshBasicMaterial({
+                     color:0xFFFF00,
+                     side:THREE.DoubleSide
+                 });
+ 
+                 // I add the central part to the scene with the color i selected.
+                 squareMesh = new THREE.Mesh(squareGeometry, squareMaterial);
+                 squareMesh.position.set(-1.5, 0.0, 4.0);
+                 scene.add(squareMesh);
+				 
+				 //This is gonna be the squares of the windows in my little house :)
+				 var cuadrado = new THREE.Geometry();
+                 cuadrado.vertices.push(new THREE.Vector3(-0.25,  0.25, 1.0));
+                 cuadrado.vertices.push(new THREE.Vector3(0.25,  0.25, 1.0));
+                 cuadrado.vertices.push(new THREE.Vector3(0.25, -0.25, 1.0));
+                 cuadrado.vertices.push(new THREE.Vector3(-0.25, -0.25, 1.0));
+				 cuadrado.faces.push(new THREE.Face3(0, 1, 2));
+				 cuadrado.faces.push(new THREE.Face3(0, 2, 3));
+				 
+				 // i put color blue
+				 var material_window = new THREE.MeshBasicMaterial({
+                     color:0x6EF3E3,
+                     side:THREE.DoubleSide
+                 });
+				 
+				 //and i add it to the scene
+				 window1 = new THREE.Mesh(cuadrado, material_window);
+                 window1.position.set(-1.7, 0.25, 4.0);
+                 scene.add(window1);
+				 
+				 window2 = new THREE.Mesh(cuadrado, material_window);
+				 window2.position.set(-0.8, 0.25, 4.0);
+				 scene.add(window2);
+				 
+				 //Im gonna make a rectangle for the door
+				 var rectangle = new THREE.Geometry();
+                 rectangle.vertices.push(new THREE.Vector3(-0.8,  -0.1, 0.0));
+                 rectangle.vertices.push(new THREE.Vector3( -0.2,  -0.1, 0.0));
+                 rectangle.vertices.push(new THREE.Vector3( -0.2, -1, 0.0));
+                 rectangle.vertices.push(new THREE.Vector3(-0.8, -1, 0.0));
+				 rectangle.faces.push(new THREE.Face3(0, 1, 2));
+				 rectangle.faces.push(new THREE.Face3(0, 2, 3));
+				 
+				 //I select brown color
+				 var material_door = new THREE.MeshBasicMaterial({
+                     color:0x804000,
+                     side:THREE.DoubleSide
+                 });
+				 
+				 //I add it to the scene
+				 door= new THREE.Mesh(rectangle,material_door);
+				 door.position.set(-1,0,4);
+				 scene.add(door);
+				 
+				 //Im gonna make another rectangle small for the pipe of the house 
+				 var rectangle2 = new THREE.Geometry();
+                 rectangle2.vertices.push(new THREE.Vector3(-0.6,  0, -0.1));
+                 rectangle2.vertices.push(new THREE.Vector3( -0.2,  0, -0.1));
+                 rectangle2.vertices.push(new THREE.Vector3( -0.2, -0.6,-0.1));
+                 rectangle2.vertices.push(new THREE.Vector3(-0.6, -0.6, -0.1));
+				 rectangle2.faces.push(new THREE.Face3(0, 1, 2));
+				 rectangle2.faces.push(new THREE.Face3(0, 2, 3));
+				 
+				 //I select grey color
+				 var material_pipe = new THREE.MeshBasicMaterial({
+                     color:0x808080,
+                     side:THREE.DoubleSide
+                 });
+				 
+				 //I add it to the scene
+				 pipe= new THREE.Mesh(rectangle2,material_pipe);
+				 pipe.position.set(-0.3,1.6,4);
+				 scene.add(pipe);
+             }
+			 
+			 function animateScene(){ 
+               // Lets open the door :)
+               door.rotation.y += 0.1; 
+               // Define the function, which is called by the browser supported timer loop. If the 
+               // browser tab is not visible, the animation is paused. So 'animateScene()' is called 
+               // in a browser controlled loop. 
+               requestAnimationFrame(animateScene); 
+
+               // Map the 3D scene down to the 2D screen (render the frame) 
+               renderScene(); 
+           } 
+ 
+             /**
+              * Render the scene. Map the 3D world to the 2D screen.
+              */
+             function renderScene(){
+                 renderer.render(scene, camera);
+             }
+         </script>
+     </body>
+</html>
